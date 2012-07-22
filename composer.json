@@ -1,0 +1,21 @@
+{
+    "name": "aykut/simplefacebook",
+    "description": "Simple PHP wrapper for Facebook SDK",
+    "keywords": ["facebook", "sdk", "wrapper", "simple"],
+    "type": "library",
+    "homepage": "https://github.com/aykutfarsak/simplefacebook",
+    "license": "Apache2",
+    "authors": [
+        {
+            "name": "Aykut Farsak",
+            "email": "aykutfarsak@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "facebook/php-sdk": "dev-master"
+    },
+    "autoload": {
+        "classmap": ["src"]
+    }
+}
