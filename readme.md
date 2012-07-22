@@ -5,6 +5,8 @@ It is a wrapper for Facebook PHP SDK. You can easily write Facebook canvas or ta
 Basic Usage
 -----
 ``` php
+<?php 
+
 $facebookAppConfig = array(
     'app_id'        => 'YOUR_APP_ID',
     'app_secret'    => 'YOUR_APP_SECRET',
@@ -32,10 +34,12 @@ Documentation
 After [removal of offline_access permission](http://developers.facebook.com/roadmap/offline-access-removal/), you have to make a graph api call for get extended access token.
 
 ``` php
+<?php 
+
 $eAC = $simpleFacebook->getExtendedAccessToken();
 echo "Extented access token: {$eAC} <br>";
 
-// with extented time
+// with expire time
 $eACWithExpireTime = $simpleFacebook->getExtendedAccessToken(true);
 $eAC = $eACWithExpireTime['access_token'];
 $eACExpires = time() + $eACWithExpireTime['expires'];
@@ -46,6 +50,8 @@ echo "Extented access token: {$eAC} (Expires at {$eACExpires})";
 ### Friends ###
 
 ``` php
+<?php 
+
 $friends = $simpleFacebook->getFriends();
 
 foreach ($friends as $friend) {
@@ -61,6 +67,8 @@ $friendIds = $simpleFacebook->getFriendIds();
 Get user friends who using this application.
 
 ``` php
+<?php 
+
 $friends = $simpleFacebook->getAppUserFriends();
 
 foreach ($friends as $friend) {
@@ -74,6 +82,8 @@ $friendIds = $simpleFacebook->getAppUserFriendIds();
 ### Permissions ###
 
 ``` php
+<?php 
+
 // get given permissions array
 $perms = $simpleFacebook->getGivenPermissions();
 
@@ -95,6 +105,8 @@ if ( $simpleFacebook->isPermGiven('read_stream,read_mailbox,user_likes') ) {
 If you are using [Requests Dialog](http://developers.facebook.com/docs/reference/dialogs/requests/), you must [delete the request](http://developers.facebook.com/docs/requests/#deleting) after it has been accepted. It is the developer's responsibility to clear them.
 
 ``` php
+<?php 
+
 // get request ids after delete
 $requestIds = $simpleFacebook->getRequestIdsAfterDelete();
 
@@ -116,6 +128,8 @@ if ( ! empty($requestIds) ) {
 If it is a tab application, you might want user to like page before using app.
 
 ``` php
+<?php 
+
 if ( ! $simpleFacebook->isTabPageLiked() ) {
     
     echo 'Like our page before using app';
@@ -128,6 +142,8 @@ if ( ! $simpleFacebook->isTabPageLiked() ) {
 Get information about tab page.
 
 ``` php
+<?php 
+
 // ...?sk=app_YOUR_APP_ID&app_data=YOUR_APP_DATA
 $appData = $simpleFacebook->getTabAppData();
 
@@ -138,6 +154,8 @@ $pageId  = $simpleFacebook->getTabPageId();
 ### Publish Open Graph Action ###
 
 ``` php
+<?php 
+
 $responseId = $simpleFacebook->publishOpenGraphAction('YOUR_APP_NAMESPACE', 'ACTION_NAME', array(
     'OBJECT_TYPE' => 'OBJECT_URL'
 ));
@@ -146,6 +164,8 @@ $responseId = $simpleFacebook->publishOpenGraphAction('YOUR_APP_NAMESPACE', 'ACT
 ### Run FQL Query ###
 
 ``` php
+<?php 
+
 // Get page fan count with running fql query
 $fql  = "SELECT name, fan_count FROM page WHERE page_id = 40796308305";
 $data = $simpleFacebook->runFQL($fql);
@@ -156,6 +176,8 @@ echo 'Fan count: ' . $data[0]['fan_count'];
 ### Post to Wall ###
 
 ``` php
+<?php 
+
 // Post data
 $postData = array(
     'message'     => 'Feed message',
@@ -173,6 +195,8 @@ $postId = $simpleFacebook->postToWall($postData);
 ### Create Event ###
 
 ``` php
+<?php 
+
 // Event data
 $eventData = array(
     'name'        => 'Event Title',
@@ -182,9 +206,9 @@ $eventData = array(
     'location'    => 'Event location',
     'privacy'     => 'OPEN'
 );
-```
 
 $eventId = $simpleFacebook->createEvent($eventData);
+```
 
 ### Force User to Login ###
 
