@@ -4,7 +4,7 @@
     "keywords": ["facebook", "sdk", "wrapper", "simple"],
     "type": "library",
     "homepage": "https://github.com/aykutfarsak/simplefacebook",
-    "license": "Apache2",
+    "license": "MIT",
     "authors": [
         {
             "name": "Aykut Farsak",
