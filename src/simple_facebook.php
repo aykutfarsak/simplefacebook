@@ -72,6 +72,12 @@ class SimpleFacebook {
      * @var array
      */
     protected $_signedRequest;
+    
+    /**
+     * Real-time updates subscription url
+     * @var string 
+     */
+    protected $_subscriptionUrl;
 
     /**
      * Constructor
@@ -101,7 +107,7 @@ class SimpleFacebook {
         
         $this->initFacebookSdk();
         
-        // set user facebook id (0 if user not logged)
+        // set user facebook id
         $this->setId();
         
         $this->setSignedRequest();
@@ -339,8 +345,8 @@ class SimpleFacebook {
     public function getAppUserFriends($justIds = false) {
 
         $values = $justIds ? 'uid' : 'uid,name';
-        $query = 'SELECT ' . $values . ' FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = "true"';
-        $data = $this->runFQL($query);
+        $query  = 'SELECT ' . $values . ' FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = "true"';
+        $data   = $this->runFQL($query);
 
         if ( !$justIds || empty($data) ) {
             return $data;
@@ -384,7 +390,6 @@ class SimpleFacebook {
         foreach ( $requestIds as $requestId ) {
 
             $fullRequestId = $requestId . '_' . $this->_id;
-
             $deleteSuccess = $this->_sdk->api("/$fullRequestId", 'DELETE');
 
             if ( $deleteSuccess ) {
@@ -415,7 +420,6 @@ class SimpleFacebook {
         }
 
         parse_str($resp, $data);
-
         return isset($data['access_token']) ? $data['access_token'] : false;
     }
     
@@ -441,18 +445,18 @@ class SimpleFacebook {
         }
 
         parse_str($resp, $data);
-
         return isset($data['access_token']) ? $withExpireTime ? $data : $data['access_token'] : false;
     }
     
     /**
      * Get data from url with cURL
      * 
-     * @param type $url
-     * @param type $params
+     * @param string $url
+     * @param array  $params
+     * @param string $customMethod
      * @return string 
      */
-    public static function getFromUrl($url, $params = null) {
+    public static function getFromUrl($url, $params = null, $customMethod = null) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url); 
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -463,6 +467,9 @@ class SimpleFacebook {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         if ( is_array($params) ) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        }
+        if ( null !== $customMethod ) {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $customMethod);
         }
         $output = curl_exec($ch);
         curl_close($ch);
@@ -616,6 +623,108 @@ class SimpleFacebook {
     public function publishOpenGraphAction($appNamespace, $action, $objectData) {
         $resp = $this->_sdk->api("/me/{$appNamespace}:{$action}", 'POST', $objectData);
         return isset($resp['id']) ? $resp['id'] : false;
+    }
+    
+    /**
+     * Subscribe to real-time updates
+     * 
+     * @param string $object
+     * @param string $fields
+     * @param string $callbackUrl
+     * @param string $verifyToken
+     * @return mixed 
+     */
+    public function subscribe($object, $fields, $callbackUrl, $verifyToken) {
+
+        $params = array(
+            'object'       => $object,
+            'fields'       => $fields,
+            'callback_url' => $callbackUrl,
+            'verify_token' => $verifyToken,
+        );
+
+        $response = self::getFromUrl($this->getSubscriptionUrl(), $params);
+        
+        return ($response && $response != 'null') ? $response : true;
+    }
+    
+    /**
+     * Get list of real-time updates
+     * 
+     * @return array 
+     */
+    public function getSubscriptions() {
+
+        $response = self::getFromUrl($this->getSubscriptionUrl());
+        
+        if ( empty($response) ) {
+            return false;
+        }
+        
+        $data = json_decode($response, true);
+        
+        return isset($data['data']) ? $data['data'] : $data;
+    }
+    
+    /**
+     * Unsubscribe to real-time updates
+     * 
+     * @param type $object
+     * @return mixed 
+     */
+    public function unsubscribe($object = null) {
+        
+        $params = array();
+        if ( null !== $object ) {
+            $params = array('object' => $object);
+        }
+        
+        $response = self::getFromUrl($this->getSubscriptionUrl(), $params, 'DELETE');
+        
+        return ($response && $response != 'null') ? $response : true;
+    }
+    
+    /**
+     * Get subscription verification string
+     *  
+     * @param string $verifyToken
+     * @return mixed 
+     */
+    public static function getSubscriptionChallenge($verifyToken) {
+        if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['hub_mode']) && 
+            $_GET['hub_mode'] == 'subscribe' && isset($_GET['hub_verify_token']) && 
+            $_GET['hub_verify_token'] == $verifyToken) {
+            return $_GET['hub_challenge'];
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Get real-time updates posted by Facebook
+     * 
+     * @return array 
+     */
+    public static function getSubscriptedUpdates() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            return json_decode(file_get_contents("php://input"), true);
+        }
+    }
+    
+    /**
+     * Get real-time updates subscription url
+     * 
+     * @return string 
+     */
+    protected function getSubscriptionUrl() {
+        
+        if ( null !== $this->_subscriptionUrl ) {
+            return $this->_subscriptionUrl;
+        }
+        
+        $url = "https://graph.facebook.com/{$this->_config['app_id']}/subscriptions?access_token=" . $this->getApplicationAccessToken();
+        $this->_subscriptionUrl = $url;
+        return $url;
     }
     
     /**

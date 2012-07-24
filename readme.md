@@ -11,7 +11,7 @@ $facebookAppConfig = array(
     'app_id'        => 'YOUR_APP_ID',
     'app_secret'    => 'YOUR_APP_SECRET',
     'redirect_uri'  => 'YOUR_REDIRECT_URI',
-    'app_perms'     => 'YOUR_PERMISSIONS_WITH_COMMA'
+    'app_perms'     => 'YOUR_PERMISSIONS' // (optional) comma-separated list
 );
 
 $simpleFacebook = new SimpleFacebook($facebookAppConfig);
@@ -31,12 +31,12 @@ Documentation
  
 ### Table of Contents ###
 * [Extended Access Token](extended-access-token)  
-* [Friends](#friends) 
-* [Friends Who Using Application](#friends-who-using-application) 
+* [Friends](#friends)
 * [Permissions](#permissions) 
 * [Request](#request) 
 * [Page Tab Application](#page-tab-application) 
 * [Publish Open Graph Action](#publish-open-graph-action) 
+* [Real-time Updates](#real-time-updates) 
 * [Run FQL Query](#run-fql-query) 
 * [Post to Wall](#post-to-wall) 
 * [Create Event](#create-event) 
@@ -76,8 +76,6 @@ foreach ($friends as $friend) {
 // or just ids
 $friendIds = $simpleFacebook->getFriendIds();
 ```
-
-### Friends Who Using Application ###
 
 Get user friends who using this application.
 
@@ -176,14 +174,54 @@ $responseId = $simpleFacebook->publishOpenGraphAction('YOUR_APP_NAMESPACE', 'ACT
 ));
 ```
 
+### Real-time Updates ###
+
+[Real-time Updates](https://developers.facebook.com/docs/reference/api/realtime/) enable your application to subscribe to changes in data in Facebook.
+
+``` php
+<?php 
+
+$object      = 'OBJECT'; // user, permissions or page
+$fields      = 'FIELDS'; // friends, checkins, likes etc.
+$callbackUrl = 'YOUR_CALLBACK_URL';
+$verifyToken = 'YOUR_SECRET_VERIFY_TOKEN';
+
+// subscribe to real-time updates
+$simpleFacebook->subscribe($object, $fields, $callbackUrl, $verifyToken);
+
+// get list of subscripted updates
+$subscriptions = $simpleFacebook->getSubscriptions();
+
+// unsubscribe from all subscripted objects
+$simpleFacebook->unsubscribe();
+
+// unsubscribe from a specific subscripted object
+$simpleFacebook->unsubscribe('user');
+```
+
+And this is callback url part.
+
+``` php
+<?php 
+// returns challenge parameter for subscription verification of your callback url
+echo SimpleFacebook::getSubscriptionChallenge($verifyToken);
+
+// get subscripted updates
+$updates = SimpleFacebook::getSubscriptedUpdates();
+
+if ( ! empty($updates) ) {
+    // there is a update!
+}
+```
+
 ### Run FQL Query ###
 
 ``` php
 <?php 
 
 // Get page fan count with running fql query
-$fql  = "SELECT name, fan_count FROM page WHERE page_id = 40796308305";
-$data = $simpleFacebook->runFQL($fql);
+$query = "SELECT name, fan_count FROM page WHERE page_id = 40796308305";
+$data  = $simpleFacebook->runFQL($query);
 
 echo 'Fan count: ' . $data[0]['fan_count'];
 ```
