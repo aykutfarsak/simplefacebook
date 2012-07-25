@@ -30,7 +30,7 @@ Documentation
 -----
  
 ### Table of Contents ###
-* [Extended Access Token](extended-access-token)  
+* [Extended Access Token](#extended-access-token)  
 * [Friends](#friends)
 * [Permissions](#permissions) 
 * [Request](#request) 
