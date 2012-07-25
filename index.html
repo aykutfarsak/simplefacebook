@@ -1,0 +1,320 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>SimpleFacebook by aykutfarsak</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>SimpleFacebook</h1>
+        <p>It is a wrapper for Facebook PHP SDK</p>
+
+        <p class="view"><a href="https://github.com/aykutfarsak/simplefacebook">View the Project on GitHub <small>aykutfarsak/simplefacebook</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/aykutfarsak/simplefacebook/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/aykutfarsak/simplefacebook/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/aykutfarsak/simplefacebook">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Simple Facebook PHP SDK Wrapper</h1>
+
+<p>It is a wrapper for Facebook PHP SDK. You can easily write Facebook canvas or tab applications with this useful library.</p>
+
+<h2>Basic Usage</h2>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="nv">$facebookAppConfig</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">'app_id'</span>        <span class="o">=&gt;</span> <span class="s1">'YOUR_APP_ID'</span><span class="p">,</span>
+    <span class="s1">'app_secret'</span>    <span class="o">=&gt;</span> <span class="s1">'YOUR_APP_SECRET'</span><span class="p">,</span>
+    <span class="s1">'redirect_uri'</span>  <span class="o">=&gt;</span> <span class="s1">'YOUR_REDIRECT_URI'</span><span class="p">,</span>
+    <span class="s1">'app_perms'</span>     <span class="o">=&gt;</span> <span class="s1">'YOUR_PERMISSIONS'</span> <span class="c1">// (optional) comma-separated list</span>
+<span class="p">);</span>
+
+<span class="nv">$simpleFacebook</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleFacebook</span><span class="p">(</span><span class="nv">$facebookAppConfig</span><span class="p">);</span>
+
+<span class="c1">// Check user login</span>
+<span class="k">if</span><span class="p">(</span> <span class="o">!</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">isLogged</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+
+    <span class="nb">printf</span><span class="p">(</span><span class="s1">'&lt;a href="%s" target="_top"&gt;Login with Facebook&lt;/a&gt;'</span><span class="p">,</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getLoginUrl</span><span class="p">());</span>
+
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s1">'Facebook user id: '</span> <span class="o">.</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getId</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>Documentation</h2>
+
+<h3>Table of Contents</h3>
+
+<ul>
+<li>
+<a href="#extended-access-token">Extended Access Token</a><br>
+</li>
+<li><a href="#friends">Friends</a></li>
+<li>
+<a href="#permissions">Permissions</a> </li>
+<li>
+<a href="#request">Request</a> </li>
+<li>
+<a href="#page-tab-application">Page Tab Application</a> </li>
+<li>
+<a href="#publish-open-graph-action">Publish Open Graph Action</a> </li>
+<li>
+<a href="#real-time-updates">Real-time Updates</a> </li>
+<li>
+<a href="#run-fql-query">Run FQL Query</a> </li>
+<li>
+<a href="#post-to-wall">Post to Wall</a> </li>
+<li>
+<a href="#create-event">Create Event</a> </li>
+<li>
+<a href="#force-user-to-login">Force User to Login</a> </li>
+<li><a href="#application-access-token">Application Access Token</a></li>
+</ul><h3>Extended Access Token</h3>
+
+<p>After <a href="http://developers.facebook.com/roadmap/offline-access-removal/">removal of offline_access permission</a>, you have to make a graph api call for get extended access token.</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="nv">$eAC</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getExtendedAccessToken</span><span class="p">();</span>
+<span class="k">echo</span> <span class="s2">"Extented access token: </span><span class="si">{</span><span class="nv">$eAC</span><span class="si">}</span><span class="s2"> &lt;br&gt;"</span><span class="p">;</span>
+
+<span class="c1">// with expire time</span>
+<span class="nv">$eACWithExpireTime</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getExtendedAccessToken</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+<span class="nv">$eAC</span> <span class="o">=</span> <span class="nv">$eACWithExpireTime</span><span class="p">[</span><span class="s1">'access_token'</span><span class="p">];</span>
+<span class="nv">$eACExpires</span> <span class="o">=</span> <span class="nb">time</span><span class="p">()</span> <span class="o">+</span> <span class="nv">$eACWithExpireTime</span><span class="p">[</span><span class="s1">'expires'</span><span class="p">];</span>
+
+<span class="k">echo</span> <span class="s2">"Extented access token: </span><span class="si">{</span><span class="nv">$eAC</span><span class="si">}</span><span class="s2"> (Expires at </span><span class="si">{</span><span class="nv">$eACExpires</span><span class="si">}</span><span class="s2">)"</span><span class="p">;</span>
+</pre></div>
+
+<h3>Friends</h3>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="nv">$friends</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getFriends</span><span class="p">();</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$friends</span> <span class="k">as</span> <span class="nv">$friend</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"Name: </span><span class="si">{</span><span class="nv">$friend</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span><span class="si">}</span><span class="s2"> ID: </span><span class="si">{</span><span class="nv">$friend</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt;br&gt;"</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// or just ids</span>
+<span class="nv">$friendIds</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getFriendIds</span><span class="p">();</span>
+</pre></div>
+
+<p>Get user friends who using this application.</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="nv">$friends</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getAppUserFriends</span><span class="p">();</span>
+
+<span class="k">foreach</span> <span class="p">(</span><span class="nv">$friends</span> <span class="k">as</span> <span class="nv">$friend</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"Name: </span><span class="si">{</span><span class="nv">$friend</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span><span class="si">}</span><span class="s2"> Facebook ID: </span><span class="si">{</span><span class="nv">$friend</span><span class="p">[</span><span class="s1">'uid'</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt;br&gt;"</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// or just ids</span>
+<span class="nv">$friendIds</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getAppUserFriendIds</span><span class="p">();</span>
+</pre></div>
+
+<h3>Permissions</h3>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="c1">// get given permissions array</span>
+<span class="nv">$perms</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getGivenPermissions</span><span class="p">();</span>
+
+<span class="c1">// check if a permission given</span>
+<span class="k">if</span> <span class="p">(</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">isPermGiven</span><span class="p">(</span><span class="s1">'read_stream'</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// now you can get user's news feed items</span>
+    <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">api</span><span class="p">(</span><span class="s1">'/me/home'</span><span class="p">);</span>
+    <span class="c1">// ..</span>
+<span class="p">}</span>
+
+<span class="c1">// check multiple permissions</span>
+<span class="k">if</span> <span class="p">(</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">isPermGiven</span><span class="p">(</span><span class="s1">'read_stream,read_mailbox,user_likes'</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// ..</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>Request</h3>
+
+<p>If you are using <a href="http://developers.facebook.com/docs/reference/dialogs/requests/">Requests Dialog</a>, you must <a href="http://developers.facebook.com/docs/requests/#deleting">delete the request</a> after it has been accepted. It is the developer's responsibility to clear them.</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="c1">// get request ids after delete</span>
+<span class="nv">$requestIds</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getRequestIdsAfterDelete</span><span class="p">();</span>
+
+<span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="k">empty</span><span class="p">(</span><span class="nv">$requestIds</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+
+    <span class="k">foreach</span> <span class="p">(</span> <span class="nv">$requestIds</span> <span class="k">as</span> <span class="nv">$requestData</span> <span class="p">)</span> <span class="p">{</span>
+
+        <span class="nv">$data</span> <span class="o">=</span> <span class="nb">explode</span><span class="p">(</span><span class="s1">'_'</span><span class="p">,</span> <span class="nv">$requestData</span><span class="p">);</span>
+        <span class="nv">$requestId</span> <span class="o">=</span> <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="nv">$userFbUid</span> <span class="o">=</span> <span class="nv">$data</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+        <span class="c1">// your turn..</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>Page Tab Application</h3>
+
+<p>If it is a tab application, you might want user to like page before using app.</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">isTabPageLiked</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+
+    <span class="k">echo</span> <span class="s1">'Like our page before using app'</span><span class="p">;</span>
+
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// ..</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Get information about tab page.</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="c1">// ...?sk=app_YOUR_APP_ID&amp;app_data=YOUR_APP_DATA</span>
+<span class="nv">$appData</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getTabAppData</span><span class="p">();</span>
+
+<span class="c1">// tab page id</span>
+<span class="nv">$pageId</span>  <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getTabPageId</span><span class="p">();</span>
+</pre></div>
+
+<h3>Publish Open Graph Action</h3>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="nv">$responseId</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">publishOpenGraphAction</span><span class="p">(</span><span class="s1">'YOUR_APP_NAMESPACE'</span><span class="p">,</span> <span class="s1">'ACTION_NAME'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">'OBJECT_TYPE'</span> <span class="o">=&gt;</span> <span class="s1">'OBJECT_URL'</span>
+<span class="p">));</span>
+</pre></div>
+
+<h3>Real-time Updates</h3>
+
+<p><a href="https://developers.facebook.com/docs/reference/api/realtime/">Real-time Updates</a> enable your application to subscribe to changes in data in Facebook.</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="nv">$object</span>      <span class="o">=</span> <span class="s1">'OBJECT'</span><span class="p">;</span> <span class="c1">// user, permissions or page</span>
+<span class="nv">$fields</span>      <span class="o">=</span> <span class="s1">'FIELDS'</span><span class="p">;</span> <span class="c1">// friends, checkins, likes etc.</span>
+<span class="nv">$callbackUrl</span> <span class="o">=</span> <span class="s1">'YOUR_CALLBACK_URL'</span><span class="p">;</span>
+<span class="nv">$verifyToken</span> <span class="o">=</span> <span class="s1">'YOUR_SECRET_VERIFY_TOKEN'</span><span class="p">;</span>
+
+<span class="c1">// subscribe to real-time updates</span>
+<span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">subscribe</span><span class="p">(</span><span class="nv">$object</span><span class="p">,</span> <span class="nv">$fields</span><span class="p">,</span> <span class="nv">$callbackUrl</span><span class="p">,</span> <span class="nv">$verifyToken</span><span class="p">);</span>
+
+<span class="c1">// get list of subscripted updates</span>
+<span class="nv">$subscriptions</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getSubscriptions</span><span class="p">();</span>
+
+<span class="c1">// unsubscribe from all subscripted objects</span>
+<span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">unsubscribe</span><span class="p">();</span>
+
+<span class="c1">// unsubscribe from a specific subscripted object</span>
+<span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">unsubscribe</span><span class="p">(</span><span class="s1">'user'</span><span class="p">);</span>
+</pre></div>
+
+<p>And this is callback url part.</p>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<span class="c1">// returns challenge parameter for subscription verification of your callback url</span>
+<span class="k">echo</span> <span class="nx">SimpleFacebook</span><span class="o">::</span><span class="na">getSubscriptionChallenge</span><span class="p">(</span><span class="nv">$verifyToken</span><span class="p">);</span>
+
+<span class="c1">// get subscripted updates</span>
+<span class="nv">$updates</span> <span class="o">=</span> <span class="nx">SimpleFacebook</span><span class="o">::</span><span class="na">getSubscriptedUpdates</span><span class="p">();</span>
+
+<span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="k">empty</span><span class="p">(</span><span class="nv">$updates</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// there is a update!</span>
+<span class="p">}</span>
+</pre></div>
+
+<h3>Run FQL Query</h3>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="c1">// Get page fan count with running fql query</span>
+<span class="nv">$query</span> <span class="o">=</span> <span class="s2">"SELECT name, fan_count FROM page WHERE page_id = 40796308305"</span><span class="p">;</span>
+<span class="nv">$data</span>  <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">runFQL</span><span class="p">(</span><span class="nv">$query</span><span class="p">);</span>
+
+<span class="k">echo</span> <span class="s1">'Fan count: '</span> <span class="o">.</span> <span class="nv">$data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'fan_count'</span><span class="p">];</span>
+</pre></div>
+
+<h3>Post to Wall</h3>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="c1">// Post data</span>
+<span class="nv">$postData</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">'message'</span>     <span class="o">=&gt;</span> <span class="s1">'Feed message'</span><span class="p">,</span>
+    <span class="s1">'picture'</span>     <span class="o">=&gt;</span> <span class="s1">'Address of image'</span><span class="p">,</span> 
+    <span class="s1">'link'</span>        <span class="o">=&gt;</span> <span class="s1">'URL'</span><span class="p">,</span>
+    <span class="s1">'name'</span>        <span class="o">=&gt;</span> <span class="s1">'URL title'</span><span class="p">,</span>
+    <span class="s1">'caption'</span>     <span class="o">=&gt;</span> <span class="s1">'Caption (under the URL title)'</span><span class="p">,</span>
+    <span class="s1">'description'</span> <span class="o">=&gt;</span> <span class="s1">'Description'</span><span class="p">,</span>
+    <span class="s1">'actions'</span>     <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s1">'name'</span> <span class="o">=&gt;</span> <span class="s1">'Action name'</span><span class="p">,</span> <span class="s1">'link'</span> <span class="o">=&gt;</span> <span class="s1">'Action link'</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="nv">$postId</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">postToWall</span><span class="p">(</span><span class="nv">$postData</span><span class="p">);</span>
+</pre></div>
+
+<h3>Create Event</h3>
+
+<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+
+<span class="c1">// Event data</span>
+<span class="nv">$eventData</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+    <span class="s1">'name'</span>        <span class="o">=&gt;</span> <span class="s1">'Event Title'</span><span class="p">,</span>
+    <span class="s1">'description'</span> <span class="o">=&gt;</span> <span class="s1">'Event description'</span><span class="p">,</span>
+    <span class="s1">'start_time'</span>  <span class="o">=&gt;</span> <span class="nb">gmmktime</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">2012</span><span class="p">),</span>
+    <span class="s1">'end_time'</span>    <span class="o">=&gt;</span> <span class="nb">gmmktime</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">2012</span><span class="p">),</span>
+    <span class="s1">'location'</span>    <span class="o">=&gt;</span> <span class="s1">'Event location'</span><span class="p">,</span>
+    <span class="s1">'privacy'</span>     <span class="o">=&gt;</span> <span class="s1">'OPEN'</span>
+<span class="p">);</span>
+
+<span class="nv">$eventId</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">createEvent</span><span class="p">(</span><span class="nv">$eventData</span><span class="p">);</span>
+</pre></div>
+
+<h3>Force User to Login</h3>
+
+<p>If you have not a application login page or want user to use application after authenticated, use <code>forceToLogin</code> after initialize SimpleFacebook.</p>
+
+<h3>Application Access Token</h3>
+
+<p>Get your application access token with <code>getApplicationAccessToken</code> method. More information about application access token, read <a href="http://developers.facebook.com/docs/opengraph/using-app-tokens/">Using App Access Tokens</a></p>
+
+<h2>License</h2>
+
+<p>(The MIT License)</p>
+
+<p>Copyright (c) 2012 Aykut Farsak (<a href="mailto:aykutfarsak@gmail.com">aykutfarsak@gmail.com</a>)</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/aykutfarsak">aykutfarsak</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
