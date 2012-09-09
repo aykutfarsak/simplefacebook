@@ -32,9 +32,21 @@
 
 <p>It is a wrapper for Facebook PHP SDK. You can easily write Facebook canvas or tab applications with this useful library.</p>
 
+<h2>Installation</h2>
+
+<p>You can use <a href="http://getcomposer.org/">Composer</a> to install SimpleFacebook.</p>
+
+<pre><code>{
+    "require": {
+        "aykut/simplefacebook": "*"
+    },
+    "minimum-stability": "dev"
+}
+</code></pre>
+
 <h2>Basic Usage</h2>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="nv">$facebookAppConfig</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
     <span class="s1">'app_id'</span>        <span class="o">=&gt;</span> <span class="s1">'YOUR_APP_ID'</span><span class="p">,</span>
@@ -74,6 +86,7 @@
 <a href="#publish-open-graph-action">Publish Open Graph Action</a> </li>
 <li>
 <a href="#real-time-updates">Real-time Updates</a> </li>
+<li><a href="#send-notification">Send Notification</a></li>
 <li>
 <a href="#run-fql-query">Run FQL Query</a> </li>
 <li>
@@ -87,7 +100,7 @@
 
 <p>After <a href="http://developers.facebook.com/roadmap/offline-access-removal/">removal of offline_access permission</a>, you have to make a graph api call for get extended access token.</p>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="nv">$eAC</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getExtendedAccessToken</span><span class="p">();</span>
 <span class="k">echo</span> <span class="s2">"Extented access token: </span><span class="si">{</span><span class="nv">$eAC</span><span class="si">}</span><span class="s2"> &lt;br&gt;"</span><span class="p">;</span>
@@ -102,7 +115,7 @@
 
 <h3>Friends</h3>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="nv">$friends</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getFriends</span><span class="p">();</span>
 
@@ -116,7 +129,7 @@
 
 <p>Get user friends who using this application.</p>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="nv">$friends</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getAppUserFriends</span><span class="p">();</span>
 
@@ -130,7 +143,7 @@
 
 <h3>Permissions</h3>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="c1">// get given permissions array</span>
 <span class="nv">$perms</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getGivenPermissions</span><span class="p">();</span>
@@ -152,7 +165,7 @@
 
 <p>If you are using <a href="http://developers.facebook.com/docs/reference/dialogs/requests/">Requests Dialog</a>, you must <a href="http://developers.facebook.com/docs/requests/#deleting">delete the request</a> after it has been accepted. It is the developer's responsibility to clear them.</p>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="c1">// get request ids after delete</span>
 <span class="nv">$requestIds</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getRequestIdsAfterDelete</span><span class="p">();</span>
@@ -174,7 +187,7 @@
 
 <p>If it is a tab application, you might want user to like page before using app.</p>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">isTabPageLiked</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
 
@@ -187,7 +200,7 @@
 
 <p>Get information about tab page.</p>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="c1">// ...?sk=app_YOUR_APP_ID&amp;app_data=YOUR_APP_DATA</span>
 <span class="nv">$appData</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">getTabAppData</span><span class="p">();</span>
@@ -198,7 +211,7 @@
 
 <h3>Publish Open Graph Action</h3>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="nv">$responseId</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">publishOpenGraphAction</span><span class="p">(</span><span class="s1">'YOUR_APP_NAMESPACE'</span><span class="p">,</span> <span class="s1">'ACTION_NAME'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span>
     <span class="s1">'OBJECT_TYPE'</span> <span class="o">=&gt;</span> <span class="s1">'OBJECT_URL'</span>
@@ -209,7 +222,7 @@
 
 <p><a href="https://developers.facebook.com/docs/reference/api/realtime/">Real-time Updates</a> enable your application to subscribe to changes in data in Facebook.</p>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="nv">$object</span>      <span class="o">=</span> <span class="s1">'OBJECT'</span><span class="p">;</span> <span class="c1">// user, permissions or page</span>
 <span class="nv">$fields</span>      <span class="o">=</span> <span class="s1">'FIELDS'</span><span class="p">;</span> <span class="c1">// friends, checkins, likes etc.</span>
@@ -231,7 +244,7 @@
 
 <p>And this is callback url part.</p>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 <span class="c1">// returns challenge parameter for subscription verification of your callback url</span>
 <span class="k">echo</span> <span class="nx">SimpleFacebook</span><span class="o">::</span><span class="na">getSubscriptionChallenge</span><span class="p">(</span><span class="nv">$verifyToken</span><span class="p">);</span>
 
@@ -243,9 +256,22 @@
 <span class="p">}</span>
 </pre></div>
 
+<h3>Send Notification</h3>
+
+<p>With <a href="https://developers.facebook.com/docs/app_notifications/">Notifications API</a>, you can easily send notification to an application user.</p>
+
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span>
+
+<span class="nv">$userId</span>   <span class="o">=</span> <span class="s1">'USER_FACEBOOK_ID'</span><span class="p">;</span>
+<span class="nv">$template</span> <span class="o">=</span> <span class="s1">'NOTIFICATION_TEXT'</span><span class="p">;</span>
+<span class="nv">$href</span>     <span class="o">=</span> <span class="s1">'RETURN_HREF'</span><span class="p">;</span> <span class="c1">// index.html?gift_id=123</span>
+
+<span class="nv">$response</span> <span class="o">=</span> <span class="nv">$simpleFacebook</span><span class="o">-&gt;</span><span class="na">sendNotification</span><span class="p">(</span><span class="nv">$userId</span><span class="p">,</span> <span class="nv">$template</span><span class="p">,</span> <span class="nv">$href</span><span class="p">);</span>
+</pre></div>
+
 <h3>Run FQL Query</h3>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="c1">// Get page fan count with running fql query</span>
 <span class="nv">$query</span> <span class="o">=</span> <span class="s2">"SELECT name, fan_count FROM page WHERE page_id = 40796308305"</span><span class="p">;</span>
@@ -256,7 +282,7 @@
 
 <h3>Post to Wall</h3>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="c1">// Post data</span>
 <span class="nv">$postData</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
@@ -274,7 +300,7 @@
 
 <h3>Create Event</h3>
 
-<div class="highlight"><pre><span class="cp">&lt;?php</span> 
+<div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="c1">// Event data</span>
 <span class="nv">$eventData</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
