@@ -2,6 +2,19 @@ Simple Facebook PHP SDK Wrapper
 ==========================
 It is a wrapper for Facebook PHP SDK. You can easily write Facebook canvas or tab applications with this useful library.
 
+Installation
+-----
+You can use [Composer](http://getcomposer.org/) to install SimpleFacebook.
+
+``` 
+{
+    "require": {
+        "aykut/simplefacebook": "*"
+    },
+    "minimum-stability": "dev"
+}
+```
+
 Basic Usage
 -----
 ``` php
@@ -37,6 +50,7 @@ Documentation
 * [Page Tab Application](#page-tab-application) 
 * [Publish Open Graph Action](#publish-open-graph-action) 
 * [Real-time Updates](#real-time-updates) 
+* [Send Notification](#send-notification)
 * [Run FQL Query](#run-fql-query) 
 * [Post to Wall](#post-to-wall) 
 * [Create Event](#create-event) 
@@ -212,6 +226,20 @@ $updates = SimpleFacebook::getSubscriptedUpdates();
 if ( ! empty($updates) ) {
     // there is a update!
 }
+```
+
+### Send Notification ###
+
+With [Notifications API](https://developers.facebook.com/docs/app_notifications/), you can easily send notification to an application user.
+
+``` php
+<?php
+
+$userId   = 'USER_FACEBOOK_ID';
+$template = 'NOTIFICATION_TEXT';
+$href     = 'RETURN_HREF'; // index.html?gift_id=123
+
+$response = $simpleFacebook->sendNotification($userId, $template, $href);
 ```
 
 ### Run FQL Query ###

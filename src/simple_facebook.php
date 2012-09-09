@@ -728,6 +728,25 @@ class SimpleFacebook {
     }
     
     /**
+     * Send notification to an application user
+     * 
+     * @param int $userId
+     * @param string $template
+     * @param string $href
+     * @return mixed
+     */
+    public function sendNotification($userId, $template, $href) {
+        $params = array(
+            'access_token' => $this->getApplicationAccessToken(),
+            'template'     => $template,
+            'href'         => $href
+        );
+
+        $response = self::getFromUrl('https://graph.facebook.com/'.$userId.'/notifications', $params);
+        return strpos($response, 'error') !== false ? $response : true;
+    }
+    
+    /**
      * Magix call method
      */
     public function __call($name, $arguments) {
