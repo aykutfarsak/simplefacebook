@@ -32,7 +32,7 @@ $config = array(
     'app_perms'    => 'YOUR_PERMISSIONS' // (optional) comma-separated list
 );
 
-$simpleFacebook = new SimpleFacebook($config, $facebook);
+$simpleFacebook = new SimpleFacebook($facebook, $config);
 
 // Check user login
 if( ! $simpleFacebook->isLogged() ) {

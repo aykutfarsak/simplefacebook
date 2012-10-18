@@ -85,7 +85,7 @@ class SimpleFacebook {
      * @param array $config
      * @return void
      */
-    function __construct(array $config, BaseFacebook $facebook) {
+    function __construct(BaseFacebook $facebook, array $config) {
         $this->_sdk = $facebook;
         $this->init($config);
     }
