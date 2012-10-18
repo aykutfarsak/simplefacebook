@@ -20,14 +20,19 @@ Basic Usage
 ``` php
 <?php 
 
-$facebookAppConfig = array(
-    'app_id'        => 'YOUR_APP_ID',
-    'app_secret'    => 'YOUR_APP_SECRET',
-    'redirect_uri'  => 'YOUR_REDIRECT_URI',
-    'app_perms'     => 'YOUR_PERMISSIONS' // (optional) comma-separated list
+// create Facebook sdk object
+$facebook = new Facebook(array(
+    'appId'  => 'YOUR_APP_ID',
+    'secret' => 'YOUR_APP_SECRET'
+));
+
+// redirect and permission config
+$config = array(
+    'redirect_uri' => 'YOUR_REDIRECT_URI',
+    'app_perms'    => 'YOUR_PERMISSIONS' // (optional) comma-separated list
 );
 
-$simpleFacebook = new SimpleFacebook($facebookAppConfig);
+$simpleFacebook = new SimpleFacebook($config, $facebook);
 
 // Check user login
 if( ! $simpleFacebook->isLogged() ) {

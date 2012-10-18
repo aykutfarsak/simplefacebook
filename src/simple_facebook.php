@@ -85,13 +85,8 @@ class SimpleFacebook {
      * @param array $config
      * @return void
      */
-    function __construct(array $config) {
-
-        // Facebook PHP SDK dependency
-        if ( ! class_exists('Facebook') ) {
-            throw new SimpleFacebookException(__CLASS__ . ' dependency to Facebook PHP SDK');
-        }
-
+    function __construct(array $config, BaseFacebook $facebook) {
+        $this->_sdk = $facebook;
         $this->init($config);
     }
     
@@ -101,15 +96,8 @@ class SimpleFacebook {
      * @return void 
      */
     protected function init($config) {
-        
-        // config vars
         $this->setConfig($config);
-        
-        $this->initFacebookSdk();
-        
-        // set user facebook id
-        $this->setId();
-        
+        $this->setId(); // set user facebook id
         $this->setSignedRequest();
         $this->setLoginUrl();
     }
@@ -141,20 +129,7 @@ class SimpleFacebook {
      * @return boolean 
      */
     protected function isConfigVarsValid($config) {
-        return isset($config['app_id']) && isset($config['app_secret']) && isset($config['redirect_uri']);
-    }
-
-    /**
-     * Init Facebook PHP SDK
-     * You can continue to use SDK callable methods
-     * 
-     * @return void 
-     */
-    protected function initFacebookSdk() {
-        $this->_sdk = new Facebook(array(
-            'appId'  => $this->_config['app_id'],
-            'secret' => $this->_config['app_secret']
-        ));
+        return isset($config['redirect_uri']);
     }
 
     /**
