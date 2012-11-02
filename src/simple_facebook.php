@@ -151,10 +151,6 @@ class SimpleFacebook {
         // set the default login url
         $this->setRedirectUri();
 
-        if ( empty($this->_redirectUri) ) {
-            throw new SimpleFacebookException('Missing login url');
-        }
-
         // add request ids to end of login url
         if ( ! empty($_REQUEST['request_ids']) ) {
             $this->_redirectUri .= strpos($this->_redirectUri, '?') === false ? '?' : '&';
