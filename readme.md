@@ -2,6 +2,8 @@ Simple Facebook PHP SDK Wrapper
 ==========================
 It is a wrapper for Facebook PHP SDK. You can easily write Facebook canvas or tab applications with this useful library.
 
+[![Build Status](https://secure.travis-ci.org/aykutfarsak/simplefacebook.png)](http://travis-ci.org/aykutfarsak/simplefacebook)
+
 Installation
 -----
 You can use [Composer](http://getcomposer.org/) to install SimpleFacebook.
