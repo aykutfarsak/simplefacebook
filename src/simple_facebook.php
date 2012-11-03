@@ -466,6 +466,15 @@ class SimpleFacebook {
         $like = $this->runFQL('SELECT uid FROM page_fan WHERE page_id="' . $pageId . '" and uid="' . $this->_id . '"');
         return $like != false && isset($like[0]);
     }
+    
+    /**
+     * Check user if admin of the page
+     * 
+     * @return boolean 
+     */
+    public function isTabPageAdmin() {
+        return isset($this->_signedRequest['page']['admin']) ? $this->_signedRequest['page']['admin'] : false;
+    }
 
     /**
      * Check if user give perm(s) to the application
