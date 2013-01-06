@@ -494,7 +494,7 @@ class SimpleFacebook {
      
             $isAdmin = isset($this->_signedRequest['page']['admin']) ? $this->_signedRequest['page']['admin'] : false;
 			
-            if($isLiked == true){
+            if($isAdmin == true){
                 $_SESSION['isTabPageAdmin'] = true;
             }
 			
