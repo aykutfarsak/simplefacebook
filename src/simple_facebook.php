@@ -454,21 +454,21 @@ class SimpleFacebook {
      */
     public function isTabPageLiked() {
     	
-		if(!isset($_SESSION['isTabPageLiked'])){
+        if(!isset($_SESSION['isTabPageLiked'])){
+
+            $isLiked = isset($this->_signedRequest['page']['liked']) ? $this->_signedRequest['page']['liked'] : false;
 			
-			$isLiked = isset($this->_signedRequest['page']['liked']) ? $this->_signedRequest['page']['liked'] : false;
+            if($isLiked == true){
+                $_SESSION['isTabPageLiked'] = true;
+            }
 			
-			if($isLiked == true){
-				$_SESSION['isTabPageLiked'] = true;
-			}
+            return $isLiked;
 			
-			return $isLiked;
-			
-		}else{
+        }else{
 		
-			return true;
+            return true;
 			
-		}
+        }
 		
     }
 
@@ -490,21 +490,21 @@ class SimpleFacebook {
      */
     public function isTabPageAdmin() {
 		
-		if(!isset($_SESSION['isTabPageAdmin'])){
+        if(!isset($_SESSION['isTabPageAdmin'])){
+     
+            $isAdmin = isset($this->_signedRequest['page']['admin']) ? $this->_signedRequest['page']['admin'] : false;
 			
-			$isAdmin = isset($this->_signedRequest['page']['admin']) ? $this->_signedRequest['page']['admin'] : false;
+            if($isLiked == true){
+                $_SESSION['isTabPageAdmin'] = true;
+            }
 			
-			if($isLiked == true){
-				$_SESSION['isTabPageAdmin'] = true;
-			}
+            return $isAdmin;
 			
-			return $isAdmin;
-			
-		}else{
+        }else{
 		
-			return true;
+            return true;
 			
-		}		
+        }		
 		
     }
 
