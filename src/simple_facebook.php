@@ -453,7 +453,23 @@ class SimpleFacebook {
      * @return boolean 
      */
     public function isTabPageLiked() {
-        return isset($this->_signedRequest['page']['liked']) ? $this->_signedRequest['page']['liked'] : false;
+    	
+		if(!isset($_SESSION['isTabPageLiked'])){
+			
+			$isLiked = isset($this->_signedRequest['page']['liked']) ? $this->_signedRequest['page']['liked'] : false;
+			
+			if($isLiked == true){
+				$_SESSION['isTabPageLiked'] = true;
+			}
+			
+			return $isLiked;
+			
+		}else{
+		
+			return true;
+			
+		}
+		
     }
 
     /**
@@ -473,7 +489,23 @@ class SimpleFacebook {
      * @return boolean 
      */
     public function isTabPageAdmin() {
-        return isset($this->_signedRequest['page']['admin']) ? $this->_signedRequest['page']['admin'] : false;
+		
+		if(!isset($_SESSION['isTabPageAdmin'])){
+			
+			$isAdmin = isset($this->_signedRequest['page']['admin']) ? $this->_signedRequest['page']['admin'] : false;
+			
+			if($isLiked == true){
+				$_SESSION['isTabPageAdmin'] = true;
+			}
+			
+			return $isAdmin;
+			
+		}else{
+		
+			return true;
+			
+		}		
+		
     }
 
     /**
