@@ -82,6 +82,7 @@ class SimpleFacebook {
     /**
      * Constructor
      * 
+     * @param BaseFacebook $facebook
      * @param array $config
      * @return void
      */
@@ -93,6 +94,7 @@ class SimpleFacebook {
     /**
      * Initialize
      * 
+     * @param array $config
      * @return void 
      */
     protected function init($config) {
@@ -113,6 +115,7 @@ class SimpleFacebook {
      * Optional keys:
      *  - app_perms
      * 
+     * @param array $config
      * @return void
      */
     protected function setConfig($config) {
@@ -242,7 +245,9 @@ class SimpleFacebook {
      * @return int 
      */
     public function getTabPageId() {
-        return isset($this->_signedRequest['page']['id']) ? $this->_signedRequest['page']['id'] : 0;
+        return isset($this->_signedRequest['page']['id']) 
+            ? $this->_signedRequest['page']['id'] 
+            : 0;
     }
     
     /**
@@ -251,7 +256,10 @@ class SimpleFacebook {
      * @return string 
      */
     public function getTabAppData() {
-        return isset($this->_signedRequest['app_data']) && ! empty($this->_signedRequest['app_data']) ? $this->_signedRequest['app_data'] : false;
+        return isset($this->_signedRequest['app_data']) 
+                && !empty($this->_signedRequest['app_data']) 
+            ? $this->_signedRequest['app_data'] 
+            : false;
     }
     
     /**
