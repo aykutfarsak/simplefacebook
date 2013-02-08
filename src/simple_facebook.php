@@ -160,8 +160,10 @@ class SimpleFacebook {
         }
 
         $this->loginUrl = $this->sdk->getLoginUrl(array(
-            'scope'         => (isset($this->config['app_perms']) ? $this->config['app_perms'] : ''),
-            'redirect_uri'  => $this->redirectUri
+            'scope' => (isset($this->config['app_perms']) 
+                ? $this->config['app_perms'] 
+                : ''),
+            'redirect_uri' => $this->redirectUri
         ));
     }
 
@@ -388,8 +390,8 @@ class SimpleFacebook {
     public function getApplicationAccessToken() {
         
         $params = array(
-            'client_id'     => $this->config['app_id'],
-            'client_secret' => $this->config['app_secret'],
+            'client_id'     => $this->sdk->getAppId(),
+            'client_secret' => $this->sdk->getAppSecret(),
             'grant_type'    => 'client_credentials'
         );
 
@@ -412,8 +414,8 @@ class SimpleFacebook {
     public function getExtendedAccessToken($withExpireTime = false) {
         
         $params = array(
-            'client_id'         => $this->config['app_id'],
-            'client_secret'     => $this->config['app_secret'],
+            'client_id'         => $this->sdk->getAppId(),
+            'client_secret'     => $this->sdk->getAppSecret(),
             'grant_type'        => 'fb_exchange_token',
             'fb_exchange_token' => $this->getAccessToken()
         );
@@ -726,7 +728,7 @@ class SimpleFacebook {
         }
         
         $url = sprintf("https://graph.facebook.com/%s/subscriptions?access_token=%s", 
-               $this->config['app_id'], $this->getApplicationAccessToken());
+               $this->sdk->getAppId(), $this->getApplicationAccessToken());
         
         $this->subscriptionUrl = $url;
         return $url;
