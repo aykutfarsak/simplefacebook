@@ -609,7 +609,7 @@ class SimpleFacebook {
      * 
      * @param string $appNamespace  Your application namespace
      * @param string $action        Action name
-     * @param array $objectData     An object data for your action ( array('object' => 'objectUrl') ). Object page source must contain open graph tags-
+     * @param array $objectData     An object data for your action ( array('object' => 'objectUrl') )
      * @return int|boolean
      */
     public function publishOpenGraphAction($appNamespace, $action, $objectData) {
@@ -714,7 +714,9 @@ class SimpleFacebook {
             return $this->subscriptionUrl;
         }
         
-        $url = "https://graph.facebook.com/{$this->config['app_id']}/subscriptions?access_token=" . $this->getApplicationAccessToken();
+        $url = sprintf("https://graph.facebook.com/%s/subscriptions?access_token=%s", 
+               $this->config['app_id'], $this->getApplicationAccessToken());
+        
         $this->subscriptionUrl = $url;
         return $url;
     }
