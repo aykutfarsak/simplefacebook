@@ -134,7 +134,7 @@ class SimpleFacebook {
     }
 
     /**
-     * Set default redirect uri ($this->_redirectUri) after login 
+     * Set default redirect uri after login 
      * 
      * @return void
      */
