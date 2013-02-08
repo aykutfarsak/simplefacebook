@@ -319,7 +319,13 @@ class SimpleFacebook {
     public function getAppUserFriends($justIds = false) {
 
         $values = $justIds ? 'uid' : 'uid,name';
-        $query  = 'SELECT ' . $values . ' FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = "true"';
+        
+        $query  = 'SELECT ' . $values . ' FROM user 
+                   WHERE uid IN(
+                        SELECT uid2 FROM friend 
+                        WHERE uid1 = me()) 
+                   AND is_app_user = "true"';
+        
         $data   = $this->runFQL($query);
 
         if ( !$justIds || empty($data) ) {
@@ -473,7 +479,11 @@ class SimpleFacebook {
      * @return boolean
      */
     public function isPageLiked($pageId) {
-        $like = $this->runFQL('SELECT uid FROM page_fan WHERE page_id="' . $pageId . '" and uid="' . $this->getId() . '"');
+        
+        $like = $this->runFQL(
+            sprintf("SELECT uid FROM page_fan WHERE page_id=%s AND uid=%s", $pageId, $this->getId())
+        );
+        
         return $like != false && isset($like[0]);
     }
     
