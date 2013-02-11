@@ -59,6 +59,7 @@ Documentation
 * [Real-time Updates](#real-time-updates) 
 * [Send Notification](#send-notification)
 * [Run FQL Query](#run-fql-query) 
+* [Check A Page Like](#check-a-page-like)
 * [Post to Wall](#post-to-wall) 
 * [Create Event](#create-event) 
 * [Force User to Login](#force-user-to-login) 
@@ -259,6 +260,20 @@ $query = "SELECT name, fan_count FROM page WHERE page_id = 40796308305";
 $data  = $fb->runFQL($query);
 
 echo 'Fan count: ' . $data[0]['fan_count'];
+```
+
+### Check A Page Like ###
+
+``` php
+<?php 
+
+if ( $fb->isLogged() && $fb->isPageLiked('PAGE_ID') ) {
+
+    echo "Liked";
+
+} else {
+    echo "Didn't like";
+}
 ```
 
 ### Post to Wall ###
