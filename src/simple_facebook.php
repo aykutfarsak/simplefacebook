@@ -55,12 +55,6 @@ class SimpleFacebook {
     protected $userProfile;
 
     /**
-     * Redirect URI after login
-     * @var string
-     */
-    protected $redirectUri;
-
-    /**
      * Facebook app login url
      * @var string 
      */
@@ -85,7 +79,8 @@ class SimpleFacebook {
      * @param array $config
      * @return void
      */
-    function __construct(BaseFacebook $facebook, array $config) {
+    function __construct(BaseFacebook $facebook, array $config = array()) 
+    {
         $this->sdk = $facebook;
         $this->init($config);
     }
@@ -96,51 +91,23 @@ class SimpleFacebook {
      * @param array $config
      * @return void 
      */
-    protected function init($config) {
+    protected function init($config) 
+    {
         $this->setConfig($config);
-        $this->setId(); // set user facebook id
-        $this->setSignedRequest();
         $this->setLoginUrl();
+        $this->setSignedRequest();
+        $this->setId(); // set user facebook id
     }
 
     /**
-     * Set Facebook config vars 
-     * 
-     * These are necessary keys for init SDK:
-     *  - app_id
-     *  - app_secret
-     *  - redirect_uri
-     * 
-     * Optional keys:
-     *  - app_perms
+     * Set Facebook config vars
      * 
      * @param array $config
      * @return void
      */
-    protected function setConfig($config) {
-        if ( ! $this->isConfigVarsValid($config) ) {
-            throw new SimpleFacebookException('Missing config vars');
-        }
+    protected function setConfig($config) 
+    {
         $this->config = $config;
-    }
-    
-    /**
-     * Check if all necessary key exist
-     * 
-     * @param array $config
-     * @return boolean 
-     */
-    protected function isConfigVarsValid($config) {
-        return isset($config['redirect_uri']);
-    }
-
-    /**
-     * Set default redirect uri after login 
-     * 
-     * @return void
-     */
-    protected function setRedirectUri() {
-        $this->redirectUri = $this->config['redirect_uri'];
     }
 
     /**
@@ -148,23 +115,29 @@ class SimpleFacebook {
      * 
      * @return void
      */
-    protected function setLoginUrl() {
-
-        // set the default login url
-        $this->setRedirectUri();
+    protected function setLoginUrl() 
+    {
+        $redirectUri = isset($this->config['redirect_uri'])
+                     ? $this->config['redirect_uri']
+                     : null;
 
         // add request ids to end of login url
-        if ( ! empty($_REQUEST['request_ids']) ) {
-            $this->redirectUri .= strpos($this->redirectUri, '?') === false ? '?' : '&';
-            $this->redirectUri .= 'request_ids=' . $_REQUEST['request_ids'];
+        if ( $redirectUri && !empty($_REQUEST['request_ids']) ) {
+            $redirectUri .= strpos($redirectUri, '?') === false ? '?' : '&';
+            $redirectUri .= 'request_ids=' . $_REQUEST['request_ids'];
+        }
+        
+        $loginConfig = array();
+        
+        if ( $redirectUri ) {
+            $loginConfig['redirect_uri'] = $redirectUri;
+        }
+        
+        if ( isset($this->config['app_perms']) ) {
+            $loginConfig['app_perms'] = $this->config['app_perms'];
         }
 
-        $this->loginUrl = $this->sdk->getLoginUrl(array(
-            'scope' => (isset($this->config['app_perms']) 
-                ? $this->config['app_perms'] 
-                : ''),
-            'redirect_uri' => $this->redirectUri
-        ));
+        $this->loginUrl = $this->sdk->getLoginUrl($loginConfig);
     }
 
     /**
@@ -172,7 +145,8 @@ class SimpleFacebook {
      * 
      * @return void
      */
-    protected function setSignedRequest() {
+    protected function setSignedRequest() 
+    {
         $this->signedRequest = $this->sdk->getSignedRequest();
     }
 
@@ -181,7 +155,8 @@ class SimpleFacebook {
      * 
      * @return void 
      */
-    protected function setId() {
+    protected function setId() 
+    {
         // user id (0 if user not logged)
         $this->id = $this->sdk->getUser();
     }
@@ -191,7 +166,8 @@ class SimpleFacebook {
      * 
      * @return void
      */
-    protected function setUserProfileData() {
+    protected function setUserProfileData() 
+    {
         try {
             // call api if profile data is empty
             if ( null === $this->userProfile ) {
@@ -208,7 +184,8 @@ class SimpleFacebook {
      * 
      * @return boolean 
      */
-    public function isLogged() {
+    public function isLogged() 
+    {
         return (boolean) $this->id;
     }
 
@@ -217,7 +194,8 @@ class SimpleFacebook {
      * 
      * @return int 
      */
-    public function getId() {
+    public function getId() 
+    {
         return $this->isLogged() ? $this->id : 0;
     }
 
@@ -226,7 +204,8 @@ class SimpleFacebook {
      * 
      * @return string 
      */
-    public function getLoginUrl() {
+    public function getLoginUrl() 
+    {
         return $this->loginUrl;
     }
 
@@ -235,7 +214,8 @@ class SimpleFacebook {
      * 
      * @return array 
      */
-    public function getUserProfileData() {
+    public function getUserProfileData() 
+    {
         $this->setUserProfileData();
         return $this->userProfile;
     }
@@ -245,7 +225,8 @@ class SimpleFacebook {
      * 
      * @return int 
      */
-    public function getTabPageId() {
+    public function getTabPageId() 
+    {
         return isset($this->signedRequest['page']['id']) 
             ? $this->signedRequest['page']['id'] 
             : 0;
@@ -256,7 +237,8 @@ class SimpleFacebook {
      * 
      * @return string 
      */
-    public function getTabAppData() {
+    public function getTabAppData() 
+    {
         return isset($this->signedRequest['app_data']) 
                 && !empty($this->signedRequest['app_data']) 
             ? $this->signedRequest['app_data'] 
@@ -268,8 +250,8 @@ class SimpleFacebook {
      * 
      * @return array
      */
-    public function getGivenPermissions() {
-        
+    public function getGivenPermissions() 
+    {   
         $data = $this->sdk->api('/me/permissions');
 
         if ( empty($data) ) {
@@ -285,8 +267,8 @@ class SimpleFacebook {
      * @param boolean $justIds
      * @return array 
      */
-    public function getFriends($justIds = false) {
-        
+    public function getFriends($justIds = false) 
+    {   
         $friendList = $this->sdk->api('/me/friends');
 
         if ( !isset($friendList['data'][0]) ) {
@@ -309,7 +291,8 @@ class SimpleFacebook {
      * 
      * @return array 
      */
-    public function getFriendIds() {
+    public function getFriendIds() 
+    {
         return $this->getFriends(true);
     }
 
@@ -319,8 +302,8 @@ class SimpleFacebook {
      * @param boolean $justIds
      * @return array
      */
-    public function getAppUserFriends($justIds = false) {
-
+    public function getAppUserFriends($justIds = false) 
+    {
         $values = $justIds ? 'uid' : 'uid,name';
         
         $query  = 'SELECT ' . $values . ' FROM user 
@@ -347,7 +330,8 @@ class SimpleFacebook {
      * 
      * @return array 
      */
-    public function getAppUserFriendIds() {
+    public function getAppUserFriendIds() 
+    {
         return $this->getAppUserFriends(true);
     }
 
@@ -356,8 +340,8 @@ class SimpleFacebook {
      * 
      * @return array
      */
-    public function getRequestIdsAfterDelete() {
-        
+    public function getRequestIdsAfterDelete() 
+    {   
         if ( ! $this->isLogged() ) {
             throw new SimpleFacebookException('This action is only for logged users');
         }
@@ -387,8 +371,8 @@ class SimpleFacebook {
      * 
      * @return string|boolean
      */
-    public function getApplicationAccessToken() {
-        
+    public function getApplicationAccessToken() 
+    {   
         $params = array(
             'client_id'     => $this->sdk->getAppId(),
             'client_secret' => $this->sdk->getAppSecret(),
@@ -411,8 +395,8 @@ class SimpleFacebook {
      * @param boolean $withExpireTime
      * @return mixed
      */
-    public function getExtendedAccessToken($withExpireTime = false) {
-        
+    public function getExtendedAccessToken($withExpireTime = false) 
+    {   
         $params = array(
             'client_id'         => $this->sdk->getAppId(),
             'client_secret'     => $this->sdk->getAppSecret(),
@@ -444,7 +428,8 @@ class SimpleFacebook {
      * @param string $customMethod
      * @return string 
      */
-    public static function getFromUrl($url, $params = null, $customMethod = null) {
+    public static function getFromUrl($url, $params = null, $customMethod = null) 
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url); 
         curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -469,7 +454,8 @@ class SimpleFacebook {
      * 
      * @return boolean 
      */
-    public function isTabPageLiked() {
+    public function isTabPageLiked() 
+    {
         return isset($this->signedRequest['page']['liked']) 
                 ? $this->signedRequest['page']['liked'] 
                 : false;
@@ -481,8 +467,8 @@ class SimpleFacebook {
      * @param int $pageId
      * @return boolean
      */
-    public function isPageLiked($pageId) {
-        
+    public function isPageLiked($pageId) 
+    {   
         $like = $this->runFQL(
             sprintf("SELECT uid FROM page_fan WHERE page_id=%s AND uid=%s", $pageId, $this->getId())
         );
@@ -495,7 +481,8 @@ class SimpleFacebook {
      * 
      * @return boolean 
      */
-    public function isTabPageAdmin() {
+    public function isTabPageAdmin() 
+    {
         return isset($this->signedRequest['page']['admin']) 
                 ? $this->signedRequest['page']['admin'] 
                 : false;
@@ -507,8 +494,8 @@ class SimpleFacebook {
      * @param string|array $perms
      * @return boolean 
      */
-    public function isPermGiven($perms) {
-        
+    public function isPermGiven($perms) 
+    {   
         if ( ! is_array($perms) ) {
             if ( strpos($perms, ',') !== false ) {
                 $perms = explode(',', $perms);
@@ -537,7 +524,8 @@ class SimpleFacebook {
      * 
      * @return boolean
      */
-    public function isBookmarked() {
+    public function isBookmarked() 
+    {
         return $this->isPermGiven('bookmarked');
     }
 
@@ -556,7 +544,8 @@ class SimpleFacebook {
      * @param array $params
      * @return int|boolean
      */
-    public function postToWall(array $params) {
+    public function postToWall(array $params) 
+    {
         $resp = $this->sdk->api('/me/feed', 'POST', $params);
         return isset($resp['id']) ? $resp['id'] : false;
     }
@@ -567,8 +556,8 @@ class SimpleFacebook {
      * @param string $query
      * @return array 
      */
-    public function runFQL($query) {
-        
+    public function runFQL($query) 
+    {   
         $param = array(
             'method' => 'fql.query',
             'query'  => $query
@@ -582,7 +571,8 @@ class SimpleFacebook {
      * 
      * @param string $url 
      */
-    public static function redirectWithJavascript($url) {
+    public static function redirectWithJavascript($url) 
+    {
         echo "<script type='text/javascript'>top.location.href = '" . $url . "';</script>";
         exit;
     }
@@ -592,7 +582,8 @@ class SimpleFacebook {
      * 
      * @return mixed
      */
-    public function forceToLogin() {
+    public function forceToLogin() 
+    {
         if ( !$this->isLogged() ) {
             self::redirectWithJavascript($this->getLoginUrl());
         }
@@ -612,7 +603,8 @@ class SimpleFacebook {
      * @param array $params
      * @return int|boolean
      */
-    public function createEvent(array $eventData) {
+    public function createEvent(array $eventData) 
+    {
         $resp = $this->sdk->api("/me/events", "POST", $eventData);
         return ( $resp && !empty($resp) && isset($resp['id']) ) ? $resp['id'] : false;
     }
@@ -625,7 +617,8 @@ class SimpleFacebook {
      * @param array $objectData     An object data for your action ( array('object' => 'objectUrl') )
      * @return int|boolean
      */
-    public function publishOpenGraphAction($appNamespace, $action, $objectData) {
+    public function publishOpenGraphAction($appNamespace, $action, $objectData) 
+    {
         $resp = $this->sdk->api("/me/{$appNamespace}:{$action}", 'POST', $objectData);
         return isset($resp['id']) ? $resp['id'] : false;
     }
@@ -639,8 +632,8 @@ class SimpleFacebook {
      * @param string $verifyToken
      * @return mixed 
      */
-    public function subscribe($object, $fields, $callbackUrl, $verifyToken) {
-
+    public function subscribe($object, $fields, $callbackUrl, $verifyToken) 
+    {
         $params = array(
             'object'       => $object,
             'fields'       => $fields,
@@ -658,8 +651,8 @@ class SimpleFacebook {
      * 
      * @return array 
      */
-    public function getSubscriptions() {
-
+    public function getSubscriptions() 
+    {
         $response = self::getFromUrl($this->getSubscriptionUrl());
         
         if ( empty($response) ) {
@@ -677,8 +670,8 @@ class SimpleFacebook {
      * @param type $object
      * @return mixed 
      */
-    public function unsubscribe($object = null) {
-        
+    public function unsubscribe($object = null) 
+    {   
         $params = array();
         if ( null !== $object ) {
             $params = array('object' => $object);
@@ -695,7 +688,8 @@ class SimpleFacebook {
      * @param string $verifyToken
      * @return mixed 
      */
-    public static function getSubscriptionChallenge($verifyToken) {
+    public static function getSubscriptionChallenge($verifyToken) 
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['hub_mode']) && 
             $_GET['hub_mode'] == 'subscribe' && isset($_GET['hub_verify_token']) && 
             $_GET['hub_verify_token'] == $verifyToken) {
@@ -710,7 +704,8 @@ class SimpleFacebook {
      * 
      * @return array 
      */
-    public static function getSubscriptedUpdates() {
+    public static function getSubscriptedUpdates() 
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             return json_decode(file_get_contents("php://input"), true);
         }
@@ -721,8 +716,8 @@ class SimpleFacebook {
      * 
      * @return string 
      */
-    protected function getSubscriptionUrl() {
-        
+    protected function getSubscriptionUrl() 
+    {   
         if ( null !== $this->subscriptionUrl ) {
             return $this->subscriptionUrl;
         }
@@ -742,7 +737,8 @@ class SimpleFacebook {
      * @param string $href
      * @return mixed
      */
-    public function sendNotification($userId, $template, $href) {
+    public function sendNotification($userId, $template, $href) 
+    {
         $params = array(
             'access_token' => $this->getApplicationAccessToken(),
             'template'     => $template,
@@ -756,8 +752,8 @@ class SimpleFacebook {
     /**
      * Magix call method
      */
-    public function __call($name, $arguments) {
-
+    public function __call($name, $arguments) 
+    {
         // you can continue to use SDK callable methods
         if ( method_exists($this->sdk, $name) && is_callable(array($this->sdk, $name)) ) {
             return call_user_func_array(array($this->sdk, $name), $arguments);

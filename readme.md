@@ -24,25 +24,25 @@ Basic Usage
 
 // create Facebook sdk object
 $facebook = new Facebook(array(
-    'appId'  => 'YOUR_APP_ID',
-    'secret' => 'YOUR_APP_SECRET'
+    'appId'  => 'APP_ID',
+    'secret' => 'APP_SECRET'
 ));
 
-// redirect and permission config
+// redirect and permission config (it is optional)
 $config = array(
-    'redirect_uri' => 'YOUR_REDIRECT_URI',
-    'app_perms'    => 'YOUR_PERMISSIONS' // (optional) comma-separated list
+    'redirect_uri' => 'REDIRECT_URI', // (optional)
+    'app_perms'    => 'APP_PERMISSIONS' // (optional) comma-separated list
 );
 
-$simpleFacebook = new SimpleFacebook($facebook, $config);
+$fb = new SimpleFacebook($facebook, $config);
 
 // Check user login
-if( ! $simpleFacebook->isLogged() ) {
+if( ! $fb->isLogged() ) {
 
-    printf('<a href="%s" target="_top">Login with Facebook</a>', $simpleFacebook->getLoginUrl());
+    printf('<a href="%s" target="_top">Login with Facebook</a>', $fb->getLoginUrl());
 
 } else {
-    echo 'Facebook user id: ' . $simpleFacebook->getId();
+    echo 'Facebook user id: ' . $fb->getId();
 }
 ```
 
@@ -72,15 +72,15 @@ After [removal of offline_access permission](http://developers.facebook.com/road
 ``` php
 <?php 
 
-$eAC = $simpleFacebook->getExtendedAccessToken();
+$eAT = $fb->getExtendedAccessToken();
 echo "Extented access token: {$eAC} <br>";
 
 // with expire time
-$eACWithExpireTime = $simpleFacebook->getExtendedAccessToken(true);
-$eAC = $eACWithExpireTime['access_token'];
-$eACExpires = time() + $eACWithExpireTime['expires'];
+$eATWithExpireTime = $fb->getExtendedAccessToken(true);
+$eAT = $eACWithExpireTime['access_token'];
+$eATExpires = time() + $eACWithExpireTime['expires'];
 
-echo "Extented access token: {$eAC} (Expires at {$eACExpires})";
+echo "Extented access token: {$eAT} (Expires at {$eATExpires})";
 ```
 
 ### Friends ###
@@ -88,14 +88,14 @@ echo "Extented access token: {$eAC} (Expires at {$eACExpires})";
 ``` php
 <?php 
 
-$friends = $simpleFacebook->getFriends();
+$friends = $fb->getFriends();
 
 foreach ($friends as $friend) {
     echo "Name: {$friend["name"]} ID: {$friend['id']} <br>";
 }
 
 // or just ids
-$friendIds = $simpleFacebook->getFriendIds();
+$friendIds = $fb->getFriendIds();
 ```
 
 Get user friends who using this application.
@@ -103,14 +103,14 @@ Get user friends who using this application.
 ``` php
 <?php 
 
-$friends = $simpleFacebook->getAppUserFriends();
+$friends = $fb->getAppUserFriends();
 
 foreach ($friends as $friend) {
     echo "Name: {$friend["name"]} Facebook ID: {$friend['uid']} <br>";
 }
 
 // or just ids
-$friendIds = $simpleFacebook->getAppUserFriendIds();
+$friendIds = $fb->getAppUserFriendIds();
 ```
 
 ### Permissions ###
@@ -119,17 +119,17 @@ $friendIds = $simpleFacebook->getAppUserFriendIds();
 <?php 
 
 // get given permissions array
-$perms = $simpleFacebook->getGivenPermissions();
+$perms = $fb->getGivenPermissions();
 
 // check if a permission given
-if ( $simpleFacebook->isPermGiven('read_stream') ) {
+if ( $fb->isPermGiven('read_stream') ) {
     // now you can get user's news feed items
-    $data = $simpleFacebook->api('/me/home');
+    $data = $fb->api('/me/home');
     // ..
 }
 
 // check multiple permissions
-if ( $simpleFacebook->isPermGiven('read_stream,read_mailbox,user_likes') ) {
+if ( $fb->isPermGiven('read_stream,read_mailbox,user_likes') ) {
     // ..
 }
 ```
@@ -142,7 +142,7 @@ If you are using [Requests Dialog](http://developers.facebook.com/docs/reference
 <?php 
 
 // get request ids after delete
-$requestIds = $simpleFacebook->getRequestIdsAfterDelete();
+$requestIds = $fb->getRequestIdsAfterDelete();
 
 if ( ! empty($requestIds) ) {
 
@@ -164,7 +164,7 @@ If it is a tab application, you might want user to like page before using app.
 ``` php
 <?php 
 
-if ( ! $simpleFacebook->isTabPageLiked() ) {
+if ( ! $fb->isTabPageLiked() ) {
     
     echo 'Like our page before using app';
     
@@ -179,10 +179,10 @@ Get information about tab page.
 <?php 
 
 // ...?sk=app_YOUR_APP_ID&app_data=YOUR_APP_DATA
-$appData = $simpleFacebook->getTabAppData();
+$appData = $fb->getTabAppData();
 
 // tab page id
-$pageId  = $simpleFacebook->getTabPageId();
+$pageId  = $fb->getTabPageId();
 ```
 
 ### Publish Open Graph Action ###
@@ -190,7 +190,7 @@ $pageId  = $simpleFacebook->getTabPageId();
 ``` php
 <?php 
 
-$responseId = $simpleFacebook->publishOpenGraphAction('YOUR_APP_NAMESPACE', 'ACTION_NAME', array(
+$responseId = $fb->publishOpenGraphAction('YOUR_APP_NAMESPACE', 'ACTION_NAME', array(
     'OBJECT_TYPE' => 'OBJECT_URL'
 ));
 ```
@@ -208,16 +208,16 @@ $callbackUrl = 'YOUR_CALLBACK_URL';
 $verifyToken = 'YOUR_SECRET_VERIFY_TOKEN';
 
 // subscribe to real-time updates
-$simpleFacebook->subscribe($object, $fields, $callbackUrl, $verifyToken);
+$fb->subscribe($object, $fields, $callbackUrl, $verifyToken);
 
 // get list of subscripted updates
-$subscriptions = $simpleFacebook->getSubscriptions();
+$subscriptions = $fb->getSubscriptions();
 
 // unsubscribe from all subscripted objects
-$simpleFacebook->unsubscribe();
+$fb->unsubscribe();
 
 // unsubscribe from a specific subscripted object
-$simpleFacebook->unsubscribe('user');
+$fb->unsubscribe('user');
 ```
 
 And this is callback url part.
@@ -246,7 +246,7 @@ $userId   = 'USER_FACEBOOK_ID';
 $template = 'NOTIFICATION_TEXT';
 $href     = 'RETURN_HREF'; // index.html?gift_id=123
 
-$response = $simpleFacebook->sendNotification($userId, $template, $href);
+$response = $fb->sendNotification($userId, $template, $href);
 ```
 
 ### Run FQL Query ###
@@ -256,7 +256,7 @@ $response = $simpleFacebook->sendNotification($userId, $template, $href);
 
 // Get page fan count with running fql query
 $query = "SELECT name, fan_count FROM page WHERE page_id = 40796308305";
-$data  = $simpleFacebook->runFQL($query);
+$data  = $fb->runFQL($query);
 
 echo 'Fan count: ' . $data[0]['fan_count'];
 ```
@@ -277,7 +277,7 @@ $postData = array(
     'actions'     => array('name' => 'Action name', 'link' => 'Action link')
 );
 
-$postId = $simpleFacebook->postToWall($postData);
+$postId = $fb->postToWall($postData);
 ```
 
 ### Create Event ###
@@ -295,7 +295,7 @@ $eventData = array(
     'privacy'     => 'OPEN'
 );
 
-$eventId = $simpleFacebook->createEvent($eventData);
+$eventId = $fb->createEvent($eventData);
 ```
 
 ### Force User to Login ###

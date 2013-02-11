@@ -50,14 +50,6 @@ class SimpleFacebookTestCase extends PHPUnit_Framework_TestCase {
         self:$data = json_encode($json, true);
     }
 
-    /**
-     * @expectedException SimpleFacebookException
-     */
-    public function testConstructorWithoutRedirect_uriConfigVar() {
-        $config = array();
-        new SimpleFacebook($this->sdkMock, $config);
-    }
-
     public function testConstructorWithValidConfigVars() {
         new SimpleFacebook($this->sdkMock, $this->config);
     }
