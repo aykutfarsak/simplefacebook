@@ -47,7 +47,7 @@ class SimpleFacebookTestCase extends PHPUnit_Framework_TestCase {
                "locale": "en_US"
             }';
         
-        self:$data = json_encode($json, true);
+        self:$data = json_decode($json, true);
     }
 
     public function testConstructorWithValidConfigVars() {
