@@ -37,7 +37,7 @@ $config = array(
 $fb = new SimpleFacebook($facebook, $config);
 
 // Check user login
-if( ! $fb->isLogged() ) {
+if (!$fb->isLogged()) {
 
     printf('<a href="%s" target="_top">Login with Facebook</a>', $fb->getLoginUrl());
 
@@ -73,15 +73,15 @@ After [removal of offline_access permission](http://developers.facebook.com/road
 ``` php
 <?php 
 
-$eAT = $fb->getExtendedAccessToken();
-echo "Extented access token: {$eAC} <br>";
+$token = $fb->getExtendedAccessToken();
+echo "Extented access token: {$token} <br>";
 
 // with expire time
-$eATWithExpireTime = $fb->getExtendedAccessToken(true);
-$eAT = $eACWithExpireTime['access_token'];
-$eATExpires = time() + $eACWithExpireTime['expires'];
+$tokenData = $fb->getExtendedAccessToken(true);
+$token = $tokenData['access_token'];
+$tokenExpires = time() + $tokenData['expires'];
 
-echo "Extented access token: {$eAT} (Expires at {$eATExpires})";
+echo "Extented access token: {$token} (Expires at {$tokenExpires})";
 ```
 
 ### Friends ###
@@ -123,14 +123,14 @@ $friendIds = $fb->getAppUserFriendIds();
 $perms = $fb->getGivenPermissions();
 
 // check if a permission given
-if ( $fb->isPermGiven('read_stream') ) {
+if ($fb->isPermGiven('read_stream')) {
     // now you can get user's news feed items
     $data = $fb->api('/me/home');
     // ..
 }
 
 // check multiple permissions
-if ( $fb->isPermGiven('read_stream,read_mailbox,user_likes') ) {
+if ($fb->isPermGiven('read_stream,read_mailbox,user_likes')) {
     // ..
 }
 ```
@@ -145,9 +145,9 @@ If you are using [Requests Dialog](http://developers.facebook.com/docs/reference
 // get request ids after delete
 $requestIds = $fb->getRequestIdsAfterDelete();
 
-if ( ! empty($requestIds) ) {
+if (!empty($requestIds)) {
 
-    foreach ( $requestIds as $requestData ) {
+    foreach ($requestIds as $requestData) {
 
         $data = explode('_', $requestData);
         $requestId = $data[0];
@@ -165,7 +165,7 @@ If it is a tab application, you might want user to like page before using app.
 ``` php
 <?php 
 
-if ( ! $fb->isTabPageLiked() ) {
+if (!$fb->isTabPageLiked()) {
     
     echo 'Like our page before using app';
     
@@ -231,7 +231,7 @@ echo SimpleFacebook::getSubscriptionChallenge($verifyToken);
 // get subscripted updates
 $updates = SimpleFacebook::getSubscriptedUpdates();
 
-if ( ! empty($updates) ) {
+if (!empty($updates)) {
     // there is a update!
 }
 ```
@@ -267,7 +267,7 @@ echo 'Fan count: ' . $data[0]['fan_count'];
 ``` php
 <?php 
 
-if ( $fb->isLogged() && $fb->isPageLiked('PAGE_ID') ) {
+if ($fb->isLogged() && $fb->isPageLiked('PAGE_ID')) {
 
     echo "Liked";
 
