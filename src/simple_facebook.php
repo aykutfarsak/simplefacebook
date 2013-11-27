@@ -134,7 +134,7 @@ class SimpleFacebook {
         }
         
         if ( isset($this->config['app_perms']) ) {
-            $loginConfig['app_perms'] = $this->config['app_perms'];
+            $loginConfig['scope'] = $this->config['app_perms'];
         }
 
         $this->loginUrl = $this->sdk->getLoginUrl($loginConfig);
