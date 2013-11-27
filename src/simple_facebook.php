@@ -133,8 +133,8 @@ class SimpleFacebook {
             $loginConfig['redirect_uri'] = $redirectUri;
         }
         
-        if ( isset($this->config['app_perms']) ) {
-            $loginConfig['scope'] = $this->config['app_perms'];
+        if ( isset($this->config['scope']) ) {
+            $loginConfig['scope'] = $this->config['scope'];
         }
 
         $this->loginUrl = $this->sdk->getLoginUrl($loginConfig);

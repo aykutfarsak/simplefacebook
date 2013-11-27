@@ -23,18 +23,18 @@ Basic Usage
 <?php 
 
 // create Facebook sdk object
-$facebook = new Facebook(array(
+$facebookSDK = new Facebook(array(
     'appId'  => 'APP_ID',
     'secret' => 'APP_SECRET'
 ));
 
-// redirect and permission config (it is optional)
+// redirect and permission config (optional)
 $config = array(
-    'redirect_uri' => 'REDIRECT_URI', // (optional)
-    'app_perms'    => 'APP_PERMISSIONS' // (optional) comma-separated list
+    'redirect_uri' => 'REDIRECT_URI',
+    'scope' => 'APP_PERMISSIONS' // (comma-separated list)
 );
 
-$fb = new SimpleFacebook($facebook, $config);
+$fb = new SimpleFacebook($facebookSDK, $config);
 
 // Check user login
 if (!$fb->isLogged()) {
