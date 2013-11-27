@@ -53,18 +53,18 @@
 <div class="highlight highlight-php"><pre><span class="o">&lt;?</span><span class="nx">php</span> 
 
 <span class="c1">// create Facebook sdk object</span>
-<span class="nv">$facebook</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Facebook</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+<span class="nv">$facebookSDK</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Facebook</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
     <span class="s1">'appId'</span>  <span class="o">=&gt;</span> <span class="s1">'APP_ID'</span><span class="p">,</span>
     <span class="s1">'secret'</span> <span class="o">=&gt;</span> <span class="s1">'APP_SECRET'</span>
 <span class="p">));</span>
 
-<span class="c1">// redirect and permission config (it is optional)</span>
+<span class="c1">// redirect and permission config (optional)</span>
 <span class="nv">$config</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
-    <span class="s1">'redirect_uri'</span> <span class="o">=&gt;</span> <span class="s1">'REDIRECT_URI'</span><span class="p">,</span> <span class="c1">// (optional)</span>
-    <span class="s1">'app_perms'</span>    <span class="o">=&gt;</span> <span class="s1">'APP_PERMISSIONS'</span> <span class="c1">// (optional) comma-separated list</span>
+    <span class="s1">'redirect_uri'</span> <span class="o">=&gt;</span> <span class="s1">'REDIRECT_URI'</span><span class="p">,</span>
+    <span class="s1">'scope'</span> <span class="o">=&gt;</span> <span class="s1">'APP_PERMISSIONS'</span> <span class="c1">// (comma-separated list)</span>
 <span class="p">);</span>
 
-<span class="nv">$fb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleFacebook</span><span class="p">(</span><span class="nv">$facebook</span><span class="p">,</span> <span class="nv">$config</span><span class="p">);</span>
+<span class="nv">$fb</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SimpleFacebook</span><span class="p">(</span><span class="nv">$facebookSDK</span><span class="p">,</span> <span class="nv">$config</span><span class="p">);</span>
 
 <span class="c1">// Check user login</span>
 <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$fb</span><span class="o">-&gt;</span><span class="na">isLogged</span><span class="p">())</span> <span class="p">{</span>
