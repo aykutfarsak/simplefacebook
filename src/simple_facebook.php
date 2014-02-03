@@ -28,8 +28,8 @@
  * @author Aykut Farsak <aykutfarsak@gmail.com>
  * @link https://github.com/aykutfarsak
  */
-class SimpleFacebook {
-
+class SimpleFacebook
+{
     /**
      * Facebook SDK object
      * @var Facebook 
@@ -74,10 +74,10 @@ class SimpleFacebook {
 
     /**
      * Constructor
-     * 
+     *
      * @param BaseFacebook $facebook
      * @param array $config
-     * @return void
+     * @return SimpleFacebook
      */
     function __construct(BaseFacebook $facebook, array $config = array()) 
     {
@@ -122,18 +122,18 @@ class SimpleFacebook {
                      : null;
 
         // add request ids to end of login url
-        if ( $redirectUri && !empty($_REQUEST['request_ids']) ) {
+        if ($redirectUri && !empty($_REQUEST['request_ids'])) {
             $redirectUri .= strpos($redirectUri, '?') === false ? '?' : '&';
             $redirectUri .= 'request_ids=' . $_REQUEST['request_ids'];
         }
         
         $loginConfig = array();
         
-        if ( $redirectUri ) {
+        if ($redirectUri) {
             $loginConfig['redirect_uri'] = $redirectUri;
         }
         
-        if ( isset($this->config['scope']) ) {
+        if (isset($this->config['scope'])) {
             $loginConfig['scope'] = $this->config['scope'];
         }
 
@@ -160,20 +160,21 @@ class SimpleFacebook {
         // user id (0 if user not logged)
         $this->id = $this->sdk->getUser();
     }
-    
+
     /**
      * Set user profile data (array)
-     * 
+     *
+     * @throws Exception
      * @return void
      */
     protected function setUserProfileData() 
     {
         try {
             // call api if profile data is empty
-            if ( null === $this->userProfile ) {
+            if (null === $this->userProfile) {
                 $this->userProfile = $this->sdk->api('/me');
             }
-        } catch ( Exception $e ) {
+        } catch (Exception $e) {
             $this->userProfile = null;
             throw $e;
         }
@@ -217,6 +218,7 @@ class SimpleFacebook {
     public function getUserProfileData() 
     {
         $this->setUserProfileData();
+
         return $this->userProfile;
     }
     
@@ -254,7 +256,7 @@ class SimpleFacebook {
     {   
         $data = $this->sdk->api('/me/permissions');
 
-        if ( empty($data) ) {
+        if (empty($data)) {
             return array();
         }
 
@@ -271,11 +273,11 @@ class SimpleFacebook {
     {   
         $friendList = $this->sdk->api('/me/friends');
 
-        if ( !isset($friendList['data'][0]) ) {
+        if (!isset($friendList['data'][0])) {
             return array();
         }
 
-        if ( !$justIds ) {
+        if (!$justIds) {
             return $friendList['data'];
         }
         
@@ -305,16 +307,15 @@ class SimpleFacebook {
     public function getAppUserFriends($justIds = false) 
     {
         $values = $justIds ? 'uid' : 'uid,name';
-        
-        $query  = 'SELECT ' . $values . ' FROM user 
+        $query  = 'SELECT ' . $values . ' FROM user
                    WHERE uid IN(
                         SELECT uid2 FROM friend 
                         WHERE uid1 = me()) 
                    AND is_app_user = "true"';
-        
-        $data   = $this->runFQL($query);
 
-        if ( !$justIds || empty($data) ) {
+        $data = $this->runFQL($query);
+
+        if (!$justIds || empty($data)) {
             return $data;
         }
         
@@ -337,28 +338,29 @@ class SimpleFacebook {
 
     /**
      * Delete request and return deleted request ids
-     * 
+     *
+     * @throws SimpleFacebookException
      * @return array
      */
     public function getRequestIdsAfterDelete() 
     {   
-        if ( ! $this->isLogged() ) {
+        if (!$this->isLogged()) {
             throw new SimpleFacebookException('This action is only for logged users');
         }
 
-        if ( empty($_REQUEST['request_ids']) ) {
+        if (empty($_REQUEST['request_ids'])) {
             return array();
         }
 
         $requestIds = explode(',', $_REQUEST['request_ids']);
         $deletedIds = array();
 
-        foreach ( $requestIds as $requestId ) {
+        foreach ($requestIds as $requestId) {
 
             $fullRequestId = $requestId . '_' . $this->getId();
             $deleteSuccess = $this->sdk->api("/$fullRequestId", 'DELETE');
 
-            if ( $deleteSuccess ) {
+            if ($deleteSuccess) {
                 $deletedIds[] = $fullRequestId;
             }
         }
@@ -381,7 +383,7 @@ class SimpleFacebook {
 
         $resp = self::getFromUrl('https://graph.facebook.com/oauth/access_token', $params);
 
-        if ( empty($resp) ) {
+        if (empty($resp)) {
             return false;
         }
 
@@ -406,7 +408,7 @@ class SimpleFacebook {
 
         $resp = self::getFromUrl('https://graph.facebook.com/oauth/access_token', $params);
 
-        if ( empty($resp) ) {
+        if (empty($resp)) {
             return false;
         }
 
@@ -438,14 +440,18 @@ class SimpleFacebook {
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_USERAGENT, 'facebook-php-3.1');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        if ( is_array($params) ) {
+
+        if (is_array($params)) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
         }
-        if ( null !== $customMethod ) {
+
+        if (null !== $customMethod) {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $customMethod);
         }
+
         $output = curl_exec($ch);
         curl_close($ch);
+
         return $output;
     }
 
@@ -496,8 +502,8 @@ class SimpleFacebook {
      */
     public function isPermGiven($perms) 
     {   
-        if ( ! is_array($perms) ) {
-            if ( strpos($perms, ',') !== false ) {
+        if (!is_array($perms)) {
+            if (strpos($perms, ',') !== false) {
                 $perms = explode(',', $perms);
             } else {
                 $perms = array($perms);
@@ -506,12 +512,12 @@ class SimpleFacebook {
 
         $info = $this->runFQL('SELECT ' . implode(',', $perms) . ' FROM permissions WHERE uid = me()');
 
-        if ( empty($info) ) {
+        if (empty($info)) {
             return false;
         }
 
-        foreach ( $info[0] as $v ) {
-            if ( $v == 0 ) {
+        foreach ($info[0] as $v) {
+            if ($v == 0) {
                 return false;
             }
         }
@@ -547,6 +553,7 @@ class SimpleFacebook {
     public function postToWall(array $params) 
     {
         $resp = $this->sdk->api('/me/feed', 'POST', $params);
+
         return isset($resp['id']) ? $resp['id'] : false;
     }
 
@@ -584,29 +591,30 @@ class SimpleFacebook {
      */
     public function forceToLogin() 
     {
-        if ( !$this->isLogged() ) {
+        if (!$this->isLogged()) {
             self::redirectWithJavascript($this->getLoginUrl());
         }
     }
-    
+
     /**
      * Create a event
-     * 
-     * Params: 
+     *
+     * Params:
      *      name        : Event title
      *      description : Description
      *      start_time  : Start date (unixtimestamp)
      *      end_time    : End dateURL (unixtimestamp)
      *      location    : Location
      *      privacy     : Privacy info ('OPEN', 'CLOSED', 'SECRET')
-     * 
-     * @param array $params
+     *
+     * @param array $eventData
      * @return int|boolean
      */
     public function createEvent(array $eventData) 
     {
         $resp = $this->sdk->api("/me/events", "POST", $eventData);
-        return ( $resp && !empty($resp) && isset($resp['id']) ) ? $resp['id'] : false;
+
+        return ($resp && !empty($resp) && isset($resp['id'])) ? $resp['id'] : false;
     }
 
     /**
@@ -620,6 +628,7 @@ class SimpleFacebook {
     public function publishOpenGraphAction($appNamespace, $action, $objectData) 
     {
         $resp = $this->sdk->api("/me/{$appNamespace}:{$action}", 'POST', $objectData);
+
         return isset($resp['id']) ? $resp['id'] : false;
     }
     
@@ -655,7 +664,7 @@ class SimpleFacebook {
     {
         $response = self::getFromUrl($this->getSubscriptionUrl());
         
-        if ( empty($response) ) {
+        if (empty($response)) {
             return false;
         }
         
@@ -673,7 +682,8 @@ class SimpleFacebook {
     public function unsubscribe($object = null) 
     {   
         $params = array();
-        if ( null !== $object ) {
+
+        if (null !== $object) {
             $params = array('object' => $object);
         }
         
@@ -692,11 +702,12 @@ class SimpleFacebook {
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['hub_mode']) && 
             $_GET['hub_mode'] == 'subscribe' && isset($_GET['hub_verify_token']) && 
-            $_GET['hub_verify_token'] == $verifyToken) {
+            $_GET['hub_verify_token'] == $verifyToken
+        ) {
             return $_GET['hub_challenge'];
-        } else {
-            return false;
         }
+
+        return false;
     }
     
     /**
@@ -718,7 +729,7 @@ class SimpleFacebook {
      */
     protected function getSubscriptionUrl() 
     {   
-        if ( null !== $this->subscriptionUrl ) {
+        if (null !== $this->subscriptionUrl) {
             return $this->subscriptionUrl;
         }
         
@@ -726,6 +737,7 @@ class SimpleFacebook {
                $this->sdk->getAppId(), $this->getApplicationAccessToken());
         
         $this->subscriptionUrl = $url;
+
         return $url;
     }
     
@@ -746,6 +758,7 @@ class SimpleFacebook {
         );
 
         $response = self::getFromUrl('https://graph.facebook.com/'.$userId.'/notifications', $params);
+
         return strpos($response, 'error') !== false ? $response : true;
     }
     
@@ -755,25 +768,25 @@ class SimpleFacebook {
     public function __call($name, $arguments) 
     {
         // you can continue to use SDK callable methods
-        if ( method_exists($this->sdk, $name) && is_callable(array($this->sdk, $name)) ) {
+        if (method_exists($this->sdk, $name) && is_callable(array($this->sdk, $name))) {
             return call_user_func_array(array($this->sdk, $name), $arguments);
         }
 
-        if ( strpos($name, 'get') === 0 ) {
+        if (strpos($name, 'get') === 0) {
 
             $property = strtolower(substr($name, 3));
 
-            if ( method_exists($this, $property) ) {
+            if (method_exists($this, $property)) {
                 return $this->$property($arguments);
             }
             
             $this->setUserProfileData();
 
-            if ( isset($this->userProfile[$property]) ) {
+            if (isset($this->userProfile[$property])) {
                 return $this->userProfile[$property];
             }
 
-            if ( isset($this->sdk->$property) ) {
+            if (isset($this->sdk->$property)) {
                 return $this->sdk->$property;
             }
         }
