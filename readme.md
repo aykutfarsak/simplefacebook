@@ -1,4 +1,7 @@
 WARNING - This project is out of date and not maintained. Check out [Facebook Official SDK for PHP](https://github.com/facebook/facebook-php-sdk-v4)
+================================
+
+----------
 
 Simple Facebook PHP SDK Wrapper
 ==========================
