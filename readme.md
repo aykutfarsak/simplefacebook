@@ -1,3 +1,5 @@
+WARNING - This project is out of date and not maintained. Check out [Facebook Official SDK for PHP](https://github.com/facebook/facebook-php-sdk-v4)
+
 Simple Facebook PHP SDK Wrapper
 ==========================
 It is a wrapper for Facebook PHP SDK. You can easily write Facebook canvas or tab applications with this useful library.
